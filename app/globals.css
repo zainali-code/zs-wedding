@@ -1,0 +1,2351 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --maroon-950: #2c0a12;
+  --maroon-900: #3d0f1a;
+  --maroon-800: #5a1526;
+  --gold-500: #b8935a;
+  --gold-300: #d8bd8c;
+  --champagne: #efe0c3;
+  --ivory: #f7f1e6;
+  --cream: #fbf7ef;
+  --charcoal: #211a1c;
+  --wedding-bg: linear-gradient(180deg, #2a0d14 0%, #22181b 54%, #281016 100%);
+  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  height: auto;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
+  /* Hide scrollbar visually while keeping scroll functional */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/WebKit */
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: auto;
+  margin: 0;
+  background: var(--charcoal);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
+  touch-action: auto;
+  /* Hide scrollbar visually while keeping scroll functional */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+.font-display { font-family: var(--font-serif); }
+
+.eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.7rem;
+  color: var(--gold-300);
+}
+
+.royal-bg {
+  background: var(--wedding-bg);
+}
+
+.section-ivory {
+  background: var(--ivory);
+  color: var(--maroon-950);
+}
+
+/* Venue & Direction section — warm parchment with a subtle champagne tint */
+.section-celebration {
+  background: linear-gradient(160deg, #f5ede0 0%, #f0e6d3 50%, #ede0cb 100%);
+  color: var(--maroon-950);
+}
+
+.divider-line {
+  width: 64px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+  margin: 0 auto;
+}
+
+.brand-logo {
+  display: block;
+  object-fit: contain;
+  filter: invert(1);
+  mix-blend-mode: screen;
+  clip-path: inset(0 0 3% 7%);
+}
+
+/* Navigation */
+.site-nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: 50;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+.site-nav--scrolled { background: var(--maroon-950); }
+
+/* Buttons */
+.btn-royal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  border: 1px solid var(--gold-500);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  background: rgba(184, 147, 90, 0.12);
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+.btn-royal:hover { background: rgba(184, 147, 90, 0.25); }
+
+.btn-royal-dark {
+  border-color: var(--maroon-800);
+  color: var(--maroon-950);
+  background: transparent;
+}
+.btn-royal-dark:hover { background: rgba(90, 21, 38, 0.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-royal { padding: 0.75rem 1.25rem; font-size: 0.68rem; }
+}
+
+/* =========================================================
+   ENVELOPE + CINEMATIC HERO REVEAL
+   ========================================================= */
+
+/* The body is never position:fixed. During the short opening sequence we only
+   hide overflow inline from Hero.tsx and restore the exact previous values. */
+html[data-invitation-scroll-lock="true"],
+body[data-invitation-scroll-lock="true"] {
+  overscroll-behavior: none;
+}
+
+.hero-main {
+  min-height: 100svh;
+}
+
+.hero-main.is-pre-reveal {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-main.is-revealed {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-content {
+  width: 100%;
+  will-change: opacity, transform, filter;
+}
+
+.envelope-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  padding-top: max(clamp(1rem, 4vw, 3rem), env(safe-area-inset-top, 0px));
+  padding-bottom: max(clamp(1rem, 4vw, 3rem), env(safe-area-inset-bottom, 0px));
+  background: var(--wedding-bg);
+  overflow: hidden;
+  perspective: 1600px;
+  isolation: isolate;
+}
+
+.envelope-screen.is-opening {
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.envelope-screen::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(216, 189, 140, 0.06), transparent 25%),
+    radial-gradient(circle at 50% 50%, transparent 47%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* The couple name is traced glyph-by-glyph as SVG text. Each tspan receives
+   its own dash animation from GSAP, so the lettering feels penned rather than
+   faded or slid into place. */
+.royal-name-drawing {
+  position: relative;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.royal-name-svg {
+  display: block;
+  width: min(100%, 54rem);
+  height: clamp(5.25rem, 12vw, 9.2rem);
+  margin-inline: auto;
+  overflow: visible;
+  filter: drop-shadow(0 1px 12px rgba(0, 0, 0, 0.18));
+}
+
+.royal-name-text {
+  font-family: var(--font-serif);
+  font-size: 142px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.royal-name-glyph {
+  fill: var(--ivory);
+  fill-opacity: 0;
+  stroke: rgba(247, 241, 230, 0.9);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+
+.royal-name-glyph--amp {
+  fill: var(--gold-300);
+  stroke: var(--gold-300);
+  font-style: italic;
+}
+
+/* Gold line-work is drawn directly on the final invitation, making the reveal feel
+   ceremonial rather than like a normal page transition. */
+.royal-path-layer {
+  position: absolute;
+  inset: clamp(0.65rem, 1.3vw, 1.25rem);
+  z-index: 3;
+  width: calc(100% - clamp(1.3rem, 2.6vw, 2.5rem));
+  height: calc(100% - clamp(1.3rem, 2.6vw, 2.5rem));
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(216, 189, 140, 0.15));
+}
+
+.royal-path-layer path {
+  fill: none;
+  stroke: rgba(216, 189, 140, 0.74);
+  stroke-width: 1.15;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.royal-path-layer .royal-path-frame {
+  stroke: rgba(184, 147, 90, 0.62);
+  stroke-width: 0.95;
+}
+
+.royal-path-layer .royal-path-flourish {
+  stroke: rgba(216, 189, 140, 0.5);
+  stroke-width: 0.9;
+}
+
+.royal-path-layer .royal-path-fine {
+  stroke: rgba(216, 189, 140, 0.42);
+  stroke-width: 0.72;
+}
+
+.env-trigger {
+  position: relative;
+  z-index: 2;
+  width: min(590px, 88vw);
+  max-height: calc(100dvh - clamp(2rem, 8vw, 6rem));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  perspective: 1600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.env-trigger:disabled {
+  cursor: default;
+}
+
+.env-trigger:focus-visible {
+  outline: 1px solid var(--gold-300);
+  outline-offset: 14px;
+}
+
+.env-wrap {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.4rem, 4vw, 2rem);
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+.env-body {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.56 / 1;
+  border: 1px solid rgba(216, 189, 140, 0.58);
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(90, 21, 38, 0.38), transparent 47%),
+    linear-gradient(145deg, #3d0f1a 0%, #2c0a12 46%, #38101a 100%);
+  box-shadow:
+    0 0 0 1px rgba(216, 189, 140, 0.08),
+    0 28px 74px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  overflow: visible;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.env-trigger:not(:disabled):hover .env-body {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(216, 189, 140, 0.14),
+    0 34px 90px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.env-top-icon {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  z-index: 9;
+  transform: translateX(-50%);
+  color: var(--gold-300);
+  opacity: 0.82;
+}
+
+/* A very subtle print visible on the closed envelope. The real Hero paper is
+   the GSAP transition card behind this envelope, not a second fake slide. */
+.env-paper-hint {
+  position: absolute;
+  z-index: 1;
+  inset: 16% 12% 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ivory);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.env-paper-hint-logo {
+  width: clamp(2.8rem, 9vw, 4.6rem) !important;
+  height: auto !important;
+  margin-bottom: 0.35rem;
+}
+
+.env-paper-hint-kicker {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: clamp(0.42rem, 1.3vw, 0.55rem);
+  color: var(--gold-300);
+}
+
+.env-paper-hint-names {
+  margin-top: 0.2rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 4.6vw, 2.35rem);
+  line-height: 1;
+}
+
+.env-pocket {
+  position: absolute;
+  z-index: 4;
+  display: block;
+  pointer-events: none;
+}
+
+.env-pocket--left {
+  inset: 0 auto 0 0;
+  width: 55%;
+  background: linear-gradient(118deg, rgba(74, 14, 28, 0.98), rgba(44, 10, 18, 0.99));
+  clip-path: polygon(0 0, 100% 58%, 0 100%);
+  border-right: 1px solid rgba(216, 189, 140, 0.11);
+}
+
+.env-pocket--right {
+  inset: 0 0 0 auto;
+  width: 55%;
+  background: linear-gradient(242deg, rgba(74, 14, 28, 0.98), rgba(44, 10, 18, 0.99));
+  clip-path: polygon(100% 0, 0 58%, 100% 100%);
+  border-left: 1px solid rgba(216, 189, 140, 0.11);
+}
+
+.env-pocket--bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  z-index: 5;
+  background: linear-gradient(0deg, #2d0b13 0%, #3a101a 100%);
+  clip-path: polygon(0 100%, 0 100%, 50% 22%, 100% 100%);
+  /* Removed drop-shadow — it creates a visible triangular shadow artifact
+     during the flap rotateX animation on all screen sizes */
+}
+
+.env-flap {
+  position: absolute;
+  z-index: 7;
+  inset: 0 0 auto 0;
+  height: 62%;
+  display: block;
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  /* Prevent flap from casting a triangular shadow outside env bounds */
+  isolation: isolate;
+}
+
+.env-flap-face,
+.env-flap-back {
+  position: absolute;
+  inset: 0;
+  display: block;
+  clip-path: polygon(0 0, 100% 0, 50% 92%);
+  backface-visibility: hidden;
+}
+
+.env-flap-face {
+  background:
+    radial-gradient(ellipse at 50% 3%, rgba(90, 21, 38, 0.48), transparent 65%),
+    linear-gradient(180deg, #43111d 0%, #2d0b13 100%);
+  /* No drop-shadow here — it leaks outside the clip-path as a triangular artifact */
+}
+
+.env-flap-back {
+  transform: rotateX(180deg);
+  background: linear-gradient(180deg, #26080f 0%, #39101a 100%);
+  border-top: 1px solid rgba(216, 189, 140, 0.24);
+}
+
+.env-seal {
+  position: absolute;
+  z-index: 10;
+  top: 49%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(78px, 15vw, 108px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 46% 54% 48% 52% / 52% 45% 55% 48%;
+  background:
+    radial-gradient(circle at 36% 28%, #dfc26e 0%, #c5a04e 34%, #9c7432 68%, #71501f 100%);
+  box-shadow:
+    0 8px 23px rgba(0, 0, 0, 0.38),
+    inset 2px 2px 5px rgba(255, 241, 179, 0.42),
+    inset -3px -3px 5px rgba(85, 52, 10, 0.28);
+  transition: filter 0.25s ease;
+  will-change: transform, opacity;
+}
+
+.env-trigger:not(:disabled):hover .env-seal {
+  filter: brightness(1.06);
+}
+
+.env-seal::before,
+.env-seal::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.env-seal::before {
+  inset: 6%;
+  border: 1px solid rgba(255, 235, 161, 0.35);
+}
+
+.env-seal::after {
+  inset: -5%;
+  border: 1px solid rgba(216, 189, 140, 0.2);
+  border-radius: 50%;
+}
+
+.env-seal-outer,
+.env-seal-inner {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.env-seal-outer {
+  inset: 13%;
+  border: 1px solid rgba(87, 52, 13, 0.3);
+}
+
+.env-seal-inner {
+  inset: 19%;
+  border: 1px solid rgba(255, 232, 148, 0.24);
+}
+
+.env-seal-logo {
+  width: 58% !important;
+  height: auto !important;
+  filter: none !important;
+  mix-blend-mode: multiply !important;
+  opacity: 0.7;
+}
+
+.env-corner {
+  position: absolute;
+  z-index: 12;
+  width: clamp(48px, 10vw, 78px);
+  height: clamp(48px, 10vw, 78px);
+  color: var(--gold-300);
+  opacity: 0.64;
+  pointer-events: none;
+}
+
+.env-corner--tl { top: 0; left: 0; }
+.env-corner--tr { top: 0; right: 0; transform: scaleX(-1); }
+.env-corner--bl { bottom: 0; left: 0; transform: scaleY(-1); }
+.env-corner--br { bottom: 0; right: 0; transform: scale(-1); }
+
+.env-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--champagne);
+  will-change: transform, opacity;
+}
+
+.env-prompt-main {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  animation: envPromptPulse 2.6s ease-in-out infinite;
+}
+
+.env-prompt-rule {
+  width: 3.7rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+}
+
+@keyframes envPromptPulse {
+  0%, 100% { opacity: 0.62; }
+  50% { opacity: 1; }
+}
+
+.music-toggle {
+  position: fixed;
+  right: clamp(1rem, 2vw, 1.5rem);
+  bottom: clamp(1rem, 2vw, 1.5rem);
+  z-index: 70;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(216, 189, 140, 0.36);
+  border-radius: 999px;
+  background: rgba(44, 10, 18, 0.78);
+  color: var(--champagne);
+  font: 500 0.62rem/1 var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.music-toggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(216, 189, 140, 0.62);
+  background: rgba(61, 15, 26, 0.9);
+}
+
+.music-toggle svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.music-toggle.is-playing svg {
+  color: var(--gold-300);
+}
+
+@media (max-width: 640px) {
+  .envelope-screen {
+    padding: 0.75rem;
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem));
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+    /* Ensure truly centered on mobile */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .env-trigger {
+    width: min(92vw, 520px);
+    /* Reset flex from parent to let wrap handle it */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .env-wrap {
+    gap: clamp(0.9rem, 3vw, 1.5rem);
+    width: 100%;
+    align-items: center;
+  }
+
+  .env-body {
+    aspect-ratio: 1.55 / 1;
+  }
+
+  .royal-path-layer {
+    inset: 0.55rem;
+    width: calc(100% - 1.1rem);
+    height: calc(100% - 1.1rem);
+  }
+
+  .royal-name-svg {
+    height: clamp(4.6rem, 23vw, 6.8rem);
+  }
+
+  .royal-name-text {
+    font-size: 132px;
+  }
+
+  .music-toggle span {
+    display: none;
+  }
+
+  .music-toggle {
+    width: 2.7rem;
+    justify-content: center;
+    padding-inline: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .env-body {
+    aspect-ratio: 1.45 / 1;
+  }
+
+  .env-paper-hint {
+    inset-inline: 9%;
+  }
+
+  .env-trigger {
+    width: 94vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .env-prompt-main {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+/* ── Event card (desktop) ── */
+
+/* Header */
+
+/* Separator */
+
+/* Body */
+
+/* Actions */
+
+/* ── Mobile card ── */
+
+/* =========================================================
+   GALLERY - NIKAH EVENT HIGHLIGHTS
+   ========================================================= */
+.gallery-editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gallery-editorial-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gallery-mobile-masonry {
+  display: none;
+}
+
+.gallery-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(216, 189, 140, 0.18);
+  border-radius: 5px;
+  background: rgba(247, 241, 230, 0.03);
+  color: var(--ivory);
+  text-align: left;
+  cursor: pointer;
+  break-inside: avoid;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 14px 34px rgba(9, 1, 4, 0.12);
+}
+
+.gallery-card:focus-visible {
+  outline: 1px solid var(--gold-300);
+  outline-offset: 4px;
+}
+
+.gallery-card-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: scale(1);
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.4s ease;
+}
+
+.gallery-card-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(23, 3, 8, 0.04) 42%, rgba(24, 4, 9, 0.64) 100%);
+  opacity: 0.72;
+  transition: opacity 0.35s ease;
+}
+
+.gallery-card-tag {
+  position: absolute;
+  top: 0.82rem;
+  left: 0.9rem;
+  z-index: 2;
+  font-family: var(--font-sans);
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  color: rgba(239, 224, 195, 0.82);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.32);
+}
+
+.gallery-card-caption {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.92rem;
+  z-index: 2;
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 1.6vw, 1.22rem);
+  font-style: italic;
+  line-height: 1.15;
+  color: rgba(247, 241, 230, 0.96);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  transform: translateY(2px);
+  transition: transform 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .gallery-card:hover .gallery-card-img {
+    transform: scale(1.018);
+    filter: brightness(1.025);
+  }
+
+  .gallery-card:hover .gallery-card-shade {
+    opacity: 0.9;
+  }
+
+  .gallery-card:hover .gallery-card-caption {
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 767px) {
+  .gallery-editorial-grid {
+    display: none;
+  }
+
+  .gallery-mobile-masonry {
+    display: block;
+    max-width: 46rem;
+    margin-inline: auto;
+    column-count: 2;
+    column-gap: 8px;
+  }
+
+  .gallery-mobile-masonry .gallery-card {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .gallery-mobile-masonry {
+    column-count: 1;
+  }
+
+  .gallery-card {
+    border-radius: 4px;
+  }
+
+  .gallery-card-tag {
+    top: 0.7rem;
+    left: 0.76rem;
+  }
+
+  .gallery-card-caption {
+    left: 0.82rem;
+    right: 0.82rem;
+    bottom: 0.76rem;
+    font-size: 1.08rem;
+  }
+}
+
+/* Lightbox keeps the full original image visible with object-fit: contain. */
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top)) max(3.4rem, env(safe-area-inset-right)) max(3.5rem, env(safe-area-inset-bottom)) max(3.4rem, env(safe-area-inset-left));
+  background: rgba(24, 10, 14, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.gallery-lb-close {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1.15rem, env(safe-area-inset-right));
+  z-index: 3;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(216, 189, 140, 0.18);
+  border-radius: 50%;
+  background: rgba(44, 10, 18, 0.4);
+  color: rgba(247, 241, 230, 0.72);
+  font: 300 1.15rem/1 var(--font-sans);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.gallery-lb-close:hover,
+.gallery-lb-close:focus-visible {
+  color: var(--ivory);
+  border-color: rgba(216, 189, 140, 0.48);
+  background: rgba(61, 15, 26, 0.75);
+}
+
+.gallery-lb-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 2.8rem;
+  height: 2.8rem;
+  transform: translateY(-50%);
+  border: 1px solid rgba(216, 189, 140, 0.14);
+  border-radius: 50%;
+  background: rgba(44, 10, 18, 0.36);
+  color: rgba(247, 241, 230, 0.62);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.gallery-lb-nav:hover,
+.gallery-lb-nav:focus-visible {
+  color: var(--ivory);
+  border-color: rgba(216, 189, 140, 0.46);
+  background: rgba(61, 15, 26, 0.72);
+}
+
+.gallery-lb-nav--prev { left: max(0.75rem, env(safe-area-inset-left)); }
+.gallery-lb-nav--next { right: max(0.75rem, env(safe-area-inset-right)); }
+
+.gallery-lb-content {
+  display: flex;
+  width: min(92vw, 74rem);
+  max-height: calc(100dvh - 7rem);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.gallery-lb-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 68rem);
+  max-height: calc(100dvh - 10rem);
+  object-fit: contain;
+  border: 1px solid rgba(216, 189, 140, 0.2);
+  border-radius: 4px;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.32);
+}
+
+.gallery-lb-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+
+.gallery-lb-cap-text {
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-style: italic;
+  color: rgba(247, 241, 230, 0.82);
+}
+
+.gallery-lb-counter {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: rgba(216, 189, 140, 0.58);
+}
+
+.gallery-lb-dots {
+  position: absolute;
+  left: 50%;
+  bottom: max(1.15rem, env(safe-area-inset-bottom));
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.gallery-lb-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(247, 241, 230, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.gallery-lb-dot--active {
+  background: var(--gold-300);
+  transform: scale(1.2);
+}
+
+@media (max-width: 640px) {
+  .gallery-lightbox {
+    padding: 4.2rem 0.75rem 4rem;
+  }
+
+  .gallery-lb-nav {
+    top: auto;
+    bottom: max(0.95rem, env(safe-area-inset-bottom));
+    transform: none;
+  }
+
+  .gallery-lb-nav--prev { left: 0.8rem; }
+  .gallery-lb-nav--next { right: 0.8rem; }
+
+  .gallery-lb-img {
+    max-width: 100%;
+    max-height: calc(100dvh - 11rem);
+  }
+
+  .gallery-lb-caption {
+    gap: 0.8rem;
+  }
+
+  .gallery-lb-cap-text {
+    font-size: 1rem;
+  }
+}
+
+/* =========================================================
+   ROYAL INVITATION HERO — FINAL REFERENCE COMPOSITION
+   ========================================================= */
+:root {
+  --hero-maroon: #4a0c19;
+  --hero-maroon-deep: #2b0710;
+  --hero-maroon-mid: #65172a;
+  --hero-gold: #d9b35d;
+  --hero-gold-bright: #edcf7a;
+  --hero-gold-soft: #c89f4d;
+}
+
+.hero-main {
+  min-height: max(100svh, 44rem);
+  padding: 0 !important;
+  background: var(--hero-maroon-deep);
+}
+
+.royal-invite-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: max(100svh, 44rem);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(139, 35, 55, 0.34) 0%, rgba(74, 12, 25, 0.12) 33%, transparent 58%),
+    radial-gradient(circle at 12% 52%, rgba(128, 28, 49, 0.26), transparent 38%),
+    radial-gradient(circle at 88% 50%, rgba(128, 28, 49, 0.24), transparent 38%),
+    linear-gradient(180deg, #360812 0%, #54101f 46%, #3a0a14 100%);
+}
+
+.royal-invite-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background:
+    repeating-radial-gradient(circle at 18% 32%, rgba(237, 207, 122, 0.09) 0 1px, transparent 1px 9px),
+    repeating-radial-gradient(circle at 82% 34%, rgba(237, 207, 122, 0.07) 0 1px, transparent 1px 10px);
+  mask-image: linear-gradient(90deg, #000 0%, transparent 30%, transparent 70%, #000 100%);
+}
+
+.royal-invite-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(15, 1, 6, 0.34), transparent 17%, transparent 83%, rgba(15, 1, 6, 0.34)),
+    linear-gradient(180deg, rgba(10, 0, 4, 0.22), transparent 18%, transparent 78%, rgba(9, 0, 3, 0.3));
+}
+
+.hero-invitation-frame {
+  position: absolute;
+  inset: clamp(0.72rem, 1.45vw, 1.35rem);
+  z-index: 6;
+  pointer-events: none;
+  border: 1px solid rgba(217, 179, 93, 0.42);
+  box-shadow:
+    inset 0 0 0 3px rgba(57, 8, 19, 0.64),
+    inset 0 0 0 4px rgba(217, 179, 93, 0.18);
+}
+
+.hero-invitation-frame::before,
+.hero-invitation-frame::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.hero-invitation-frame::before {
+  inset: 0.42rem;
+  border: 1px solid rgba(217, 179, 93, 0.17);
+}
+
+.hero-invitation-frame::after {
+  left: 50%;
+  top: -1px;
+  width: min(24vw, 18rem);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--hero-gold-bright), transparent);
+  box-shadow: 0 calc(100dvh - 2.8rem) 0 rgba(237, 207, 122, 0.5);
+}
+
+.hero-frame-corner {
+  position: absolute;
+  width: clamp(2.6rem, 5vw, 4.7rem);
+  aspect-ratio: 1;
+  opacity: 0.9;
+}
+
+.hero-frame-corner::before,
+.hero-frame-corner::after {
+  content: "";
+  position: absolute;
+  background: linear-gradient(90deg, var(--hero-gold-bright), rgba(217, 179, 93, 0.26));
+}
+
+.hero-frame-corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+.hero-frame-corner::after { width: 1px; height: 100%; top: 0; left: 0; }
+.hero-frame-corner--tl { top: 0.68rem; left: 0.68rem; }
+.hero-frame-corner--tr { top: 0.68rem; right: 0.68rem; transform: scaleX(-1); }
+.hero-frame-corner--bl { bottom: 0.68rem; left: 0.68rem; transform: scaleY(-1); }
+.hero-frame-corner--br { bottom: 0.68rem; right: 0.68rem; transform: scale(-1); }
+
+.hero-side-art {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  will-change: clip-path, transform, opacity, filter;
+}
+
+.hero-side-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+}
+
+.hero-side-art--left {
+  left: clamp(-7.5rem, -5vw, -2rem);
+  bottom: clamp(1.7rem, 4.5vh, 3.7rem);
+  width: clamp(23rem, 38vw, 43rem);
+}
+
+.hero-side-art--right {
+  right: clamp(-8rem, -4vw, -2.2rem);
+  bottom: -0.35rem;
+  width: clamp(37rem, 61vw, 72rem);
+}
+
+.hero-center-vignette {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 49%;
+  width: min(64rem, 76vw);
+  height: min(42rem, 82vh);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(74, 12, 25, 0.92) 0%, rgba(74, 12, 25, 0.72) 42%, rgba(74, 12, 25, 0.28) 67%, transparent 79%);
+  filter: blur(1px);
+}
+
+.hero-content {
+  z-index: 5;
+  width: min(54rem, calc(100% - 3rem));
+  max-width: none;
+  padding: clamp(5.6rem, 9vh, 7.2rem) 1rem clamp(4.1rem, 7vh, 5.8rem);
+}
+
+.hero-kicker {
+  margin: 0 0 0.6rem;
+  color: #f3dfac;
+  font: 600 clamp(0.63rem, 0.82vw, 0.79rem)/1.2 var(--font-sans);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.hero-date-line {
+  margin: clamp(0.75rem, 1.6vh, 1.2rem) 0 0;
+  color: #f7e9c8;
+  font: 600 clamp(0.62rem, 0.88vw, 0.79rem)/1.4 var(--font-sans);
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.hero-date-line span {
+  display: inline-block;
+  padding: 0 0.55em;
+  color: var(--hero-gold-bright);
+}
+
+.hero-divider {
+  display: grid;
+  grid-template-columns: minmax(3rem, 10rem) auto minmax(3rem, 10rem);
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin: clamp(0.75rem, 1.6vh, 1.15rem) auto;
+  color: var(--hero-gold-soft);
+}
+
+.hero-divider span {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+.hero-divider span:last-child { transform: scaleX(-1); }
+.hero-divider i {
+  width: 0.38rem;
+  height: 0.38rem;
+  transform: rotate(45deg);
+  border: 1px solid currentColor;
+  box-shadow: 0 0 0 2px rgba(217,179,93,0.06);
+}
+
+.hero-countdown-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hero-countdown-units {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(0.22rem, 0.7vw, 0.56rem);
+}
+
+.hero-countdown-unit-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.22rem, 0.7vw, 0.56rem);
+}
+
+.hero-countdown-unit {
+  display: flex;
+  min-width: clamp(3.45rem, 5vw, 4.7rem);
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-countdown-value {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: clamp(2.8rem, 4.6vw, 3.65rem);
+  padding: 0.12rem 0.35rem 0.05rem;
+  border: 1px solid rgba(246, 219, 141, 0.6);
+  border-radius: 0.16rem;
+  color: #4a0c19;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.3), transparent 30%),
+    linear-gradient(145deg, #f0d57d 0%, #c99d42 54%, #eccd72 100%);
+  box-shadow:
+    0 3px 9px rgba(12, 1, 4, 0.35),
+    inset 0 0 0 1px rgba(83, 35, 7, 0.22),
+    inset 0 8px 14px rgba(255,255,255,0.18);
+  font: 600 clamp(1.65rem, 3vw, 2.45rem)/1 var(--font-serif);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px rgba(255,255,255,0.28);
+}
+
+.hero-countdown-label {
+  margin-top: 0.3rem;
+  color: #f5e2b3;
+  font: 600 clamp(0.48rem, 0.6vw, 0.58rem)/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-countdown-separator {
+  display: inline-block;
+  padding-top: clamp(0.74rem, 1.65vw, 1.18rem);
+  color: var(--hero-gold-bright);
+  font: 600 clamp(1.1rem, 1.9vw, 1.6rem)/1 var(--font-serif);
+  text-shadow: 0 0 9px rgba(237,207,122,0.18);
+}
+
+.hero-countdown-caption {
+  margin: 0;
+  color: #f7e7c3;
+  font: 600 clamp(0.52rem, 0.7vw, 0.65rem)/1.25 var(--font-sans);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero-quote {
+  margin: clamp(0.75rem, 1.8vh, 1.25rem) 0 0;
+  color: rgba(251, 240, 215, 0.9);
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 1.45vw, 1.28rem);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.65rem, 1.5vw, 1rem);
+  margin-top: clamp(1.05rem, 2.2vh, 1.6rem);
+}
+
+.hero-royal-button {
+  position: relative;
+  min-width: clamp(10.5rem, 15vw, 14rem);
+  padding: 0.72rem 1.3rem;
+  border: 1px solid rgba(237, 207, 122, 0.86);
+  color: #f8e6ba;
+  background: linear-gradient(180deg, rgba(112, 26, 43, 0.52), rgba(48, 6, 15, 0.72));
+  box-shadow: inset 0 0 0 3px rgba(217,179,93,0.08), 0 6px 18px rgba(10,0,3,0.16);
+  font: 600 clamp(0.56rem, 0.7vw, 0.66rem)/1 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.hero-royal-button::before,
+.hero-royal-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  transform: translateY(-50%) rotate(45deg);
+  border: 1px solid rgba(237,207,122,0.64);
+}
+.hero-royal-button::before { left: 0.42rem; }
+.hero-royal-button::after { right: 0.42rem; }
+.hero-royal-button:hover {
+  color: #fff2cf;
+  border-color: var(--hero-gold-bright);
+  background: linear-gradient(180deg, rgba(132, 34, 54, 0.72), rgba(66, 9, 20, 0.82));
+}
+
+/* The traced name uses the same gold finish as the final static invitation. */
+.royal-name-svg {
+  width: min(100%, 52rem);
+  height: clamp(5.5rem, 10vw, 8.2rem);
+}
+
+.royal-name-text {
+  font-size: 146px;
+  font-weight: 500;
+  letter-spacing: -2px;
+}
+
+.royal-name-glyph {
+  fill: var(--hero-gold-bright);
+  fill-opacity: 0;
+  stroke: rgba(244, 220, 151, 0.98);
+  stroke-width: 1.18;
+}
+
+.royal-name-glyph--amp {
+  fill: #f2cf73;
+  stroke: #f2cf73;
+}
+
+.royal-path-layer {
+  z-index: 7;
+  opacity: 0;
+  filter: drop-shadow(0 0 7px rgba(237, 207, 122, 0.16));
+}
+
+.royal-path-layer path {
+  stroke: rgba(237, 207, 122, 0.78);
+}
+
+/* Nav treatment from the supplied banner: grouped links + separate framed CTA. */
+.site-nav {
+  z-index: 80;
+  background: linear-gradient(180deg, rgba(35, 3, 10, 0.64), rgba(35, 3, 10, 0));
+}
+
+.site-nav--scrolled {
+  background: rgba(43, 7, 16, 0.96);
+  box-shadow: 0 8px 28px rgba(11, 0, 3, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.site-nav-links-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.18rem 0.4rem;
+  border: 1px solid rgba(217, 179, 93, 0.44);
+  background: rgba(42, 5, 14, 0.34);
+}
+
+.site-nav-link {
+  padding: 0.7rem 0.8rem;
+  color: rgba(251, 241, 219, 0.9);
+  font: 500 0.75rem/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.site-nav-link:hover {
+  color: var(--hero-gold-bright);
+  background: rgba(217, 179, 93, 0.06);
+}
+
+/* Exact supplied Celebration images; no redraw, icon font, SVG replacement or filter. */
+
+@media (max-width: 1100px) {
+  .hero-side-art--left {
+    left: -8rem;
+    width: clamp(24rem, 45vw, 35rem);
+    opacity: 0.86;
+  }
+
+  .hero-side-art--right {
+    right: -11rem;
+    width: clamp(40rem, 70vw, 58rem);
+    opacity: 0.9;
+  }
+
+  .hero-center-vignette {
+    width: min(58rem, 86vw);
+  }
+}
+
+@media (max-width: 767px) {
+  .royal-invite-scene,
+  .hero-main {
+    min-height: max(100svh, 42rem);
+  }
+
+  .hero-invitation-frame {
+    inset: 0.5rem;
+  }
+
+  .hero-side-art--left {
+    left: -12rem;
+    bottom: 1.7rem;
+    width: 29rem;
+    opacity: 0.48;
+  }
+
+  .hero-side-art--right {
+    right: -18rem;
+    bottom: -0.5rem;
+    width: 42rem;
+    opacity: 0.5;
+  }
+
+  .hero-center-vignette {
+    width: 120vw;
+    height: 78vh;
+    background: radial-gradient(ellipse at center, rgba(74, 12, 25, 0.98) 0%, rgba(74, 12, 25, 0.88) 48%, rgba(74, 12, 25, 0.46) 70%, transparent 86%);
+  }
+
+  .hero-content {
+    width: min(100%, 34rem);
+    padding: 5.8rem 1.15rem 4.6rem;
+  }
+
+  
+
+  
+
+  .hero-date-line {
+    max-width: 26rem;
+    margin-inline: auto;
+    line-height: 1.65;
+  }
+
+  .hero-date-line span {
+    padding-inline: 0.25em;
+  }
+
+  .royal-name-svg {
+    height: clamp(5rem, 22vw, 6.8rem);
+  }
+
+  .royal-name-text {
+    font-size: 136px;
+  }
+
+  .hero-countdown-unit {
+    min-width: clamp(3.2rem, 15vw, 4.1rem);
+  }
+
+  .hero-countdown-value {
+    min-height: 2.8rem;
+    font-size: clamp(1.55rem, 7vw, 2rem);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-royal-button {
+    width: min(18rem, 84vw);
+  }
+}
+
+@media (max-width: 430px) {
+  .hero-content {
+    padding-top: 5.2rem;
+  }
+
+  .hero-kicker {
+    letter-spacing: 0.2em;
+  }
+
+  
+
+  .hero-countdown-units,
+  .hero-countdown-unit-wrap {
+    gap: 0.18rem;
+  }
+
+  .hero-countdown-unit {
+    min-width: 3rem;
+  }
+
+  .hero-countdown-separator {
+    padding-top: 0.75rem;
+  }
+
+  .hero-quote {
+    max-width: 19rem;
+    margin-inline: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-side-art,
+  .hero-invitation-frame,
+  .hero-content,
+  .royal-name-glyph,
+  .royal-path-layer path {
+    will-change: auto;
+  }
+}
+
+@supports (-webkit-mask-image: linear-gradient(#000, transparent)) {
+  .royal-invite-scene::before {
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 30%, transparent 70%, #000 100%);
+  }
+}
+
+/* =========================================================
+   REQUESTED HERO / CELEBRATION REFINEMENTS — 2026-09-19
+   Only overrides related to the requested changes are kept here.
+   ========================================================= */
+
+/* The final Hero is the same DOM that is drawn during opening. The envelope
+   overlay is transparent and uses its own fading backdrop, so there is no
+   expanding card/square and no second-Hero handoff. */
+.hero-main.is-pre-reveal {
+  opacity: 1;
+  visibility: visible;
+}
+
+.envelope-screen {
+  background: transparent;
+}
+
+.envelope-screen::before {
+  content: none;
+}
+
+.envelope-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(139, 35, 55, 0.34) 0%, rgba(74, 12, 25, 0.12) 33%, transparent 58%),
+    radial-gradient(circle at 12% 52%, rgba(128, 28, 49, 0.26), transparent 38%),
+    radial-gradient(circle at 88% 50%, rgba(128, 28, 49, 0.24), transparent 38%),
+    linear-gradient(180deg, #360812 0%, #54101f 46%, #3a0a14 100%);
+}
+
+.envelope-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(216, 189, 140, 0.05), transparent 25%),
+    radial-gradient(circle at 50% 50%, transparent 47%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+.bismillah-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, transform, filter;
+}
+
+.bismillah-stage-inner {
+  display: flex;
+  width: min(760px, 86vw, calc(64dvh * 1.569));
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.bismillah-stage-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 64dvh;
+  object-fit: contain;
+  object-position: center;
+  border: 0;
+  box-shadow: none;
+  /* Feathered edges so the card melts into the maroon backdrop */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 2.2%, #000 97.8%, transparent),
+    linear-gradient(to bottom, transparent, #000 2.8%, #000 97.2%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 2.2%, #000 97.8%, transparent),
+    linear-gradient(to bottom, transparent, #000 2.8%, #000 97.2%, transparent);
+  mask-composite: intersect;
+}
+.hero-main,
+.royal-invite-scene {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100svh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.hero-content {
+  width: min(52rem, calc(100% - 2rem));
+  padding: clamp(4.35rem, 7.2dvh, 6.15rem) 1rem clamp(1.1rem, 2.5dvh, 2rem);
+}
+
+.hero-side-art {
+  bottom: 0;
+  overflow: visible;
+}
+
+.hero-side-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+.hero-side-art--left {
+  left: clamp(-1.75rem, -1.35vw, -0.35rem);
+  bottom: 0;
+  width: auto;
+  height: min(50dvh, 31rem);
+  aspect-ratio: 705 / 502;
+}
+
+.hero-side-art--right {
+  right: clamp(-1.9rem, -1.4vw, -0.35rem);
+  bottom: 0;
+  width: auto;
+  height: min(52dvh, 31rem);
+  aspect-ratio: 1376 / 530;
+}
+
+.hero-center-vignette {
+  top: 48%;
+  width: min(61rem, 74vw);
+  height: min(38rem, 72dvh);
+}
+
+.hero-kicker {
+  margin-bottom: clamp(0.35rem, 0.8dvh, 0.58rem);
+}
+
+/* Couple names and the traced version are clean white in both the animation
+   and the locked final Hero. */
+
+.royal-name-svg {
+  width: min(100%, 50rem);
+  height: clamp(4.65rem, min(9.3vw, 14.5dvh), 7.55rem);
+}
+
+.royal-name-glyph,
+.royal-name-glyph--amp {
+  fill: #fff;
+  stroke: rgba(255, 255, 255, 0.97);
+}
+
+.hero-main.is-revealed .royal-name-glyph {
+  fill-opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.hero-date-line {
+  margin-top: clamp(0.55rem, 1.2dvh, 0.9rem);
+}
+
+.hero-divider {
+  margin: clamp(0.5rem, 1.05dvh, 0.78rem) auto;
+}
+
+/* Countdown: remove caramel/gold fill entirely. The timer now uses white type,
+   white borders and transparent maroon glass so it belongs to the Hero rather
+   than looking like separate gold tiles. */
+.hero-countdown {
+  gap: clamp(0.34rem, 0.72dvh, 0.55rem);
+}
+
+.hero-countdown-value {
+  min-height: clamp(2.35rem, min(4.3vw, 6.5dvh), 3.2rem);
+  border-color: rgba(255, 255, 255, 0.72);
+  color: #fff;
+  background: rgba(43, 7, 16, 0.2);
+  box-shadow:
+    0 3px 10px rgba(12, 1, 4, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
+}
+
+.hero-countdown-label,
+.hero-countdown-separator,
+.hero-countdown-caption {
+  color: #fff;
+  text-shadow: none;
+}
+
+.hero-countdown-separator {
+  padding-top: clamp(0.63rem, 1.35vw, 0.95rem);
+}
+
+.hero-quote {
+  margin-top: clamp(0.5rem, 1.05dvh, 0.85rem);
+}
+
+.hero-actions {
+  margin-top: clamp(0.72rem, 1.45dvh, 1.05rem);
+}
+
+/* Celebration is intentionally flat/editorial: no cards, tabs or accordions. */
+.celebration-events {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(72rem, 100%);
+  margin-inline: auto;
+  border-top: 1px solid rgba(44, 10, 18, 0.13);
+  border-bottom: 1px solid rgba(44, 10, 18, 0.13);
+}
+
+.celebration-event {
+  position: relative;
+  min-width: 0;
+  padding: clamp(2.2rem, 4vw, 3.5rem) clamp(1.4rem, 3vw, 2.75rem);
+  text-align: center;
+}
+
+.celebration-event + .celebration-event {
+  border-left: 1px solid rgba(44, 10, 18, 0.13);
+}
+
+.celebration-event-icon {
+  display: grid;
+  place-items: center;
+  width: min(10rem, 72%);
+  height: clamp(6.5rem, 9vw, 8rem);
+  margin: 0 auto clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.celebration-event-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.celebration-event-date {
+  margin: 0;
+  color: var(--maroon-800);
+  font: 600 0.64rem/1.4 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.celebration-event-name {
+  margin: 0.6rem 0 0;
+  color: var(--maroon-950);
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 3.2vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.celebration-event-time {
+  margin: 0.9rem 0 0;
+  color: var(--maroon-900);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+
+.celebration-event-venue {
+  margin: 0.38rem 0 0;
+  color: rgba(61, 15, 26, 0.68);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.celebration-event-note {
+  min-height: 2.8em;
+  margin: 1rem auto 0;
+  color: rgba(61, 15, 26, 0.58);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.celebration-event-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.2rem;
+  padding-bottom: 0.22rem;
+  border-bottom: 1px solid rgba(90, 21, 38, 0.45);
+  color: var(--maroon-800);
+  font: 600 0.62rem/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.celebration-event-link:hover {
+  color: var(--maroon-950);
+  border-color: var(--maroon-950);
+}
+
+@media (max-width: 1100px) {
+  .hero-side-art--left {
+    left: -1.15rem;
+    width: auto;
+    height: min(46dvh, 26rem);
+    opacity: 0.82;
+  }
+
+  .hero-side-art--right {
+    right: -1.4rem;
+    width: auto;
+    height: min(47dvh, 25rem);
+    opacity: 0.86;
+  }
+
+  .hero-center-vignette {
+    width: min(55rem, 84vw);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-main,
+  .royal-invite-scene {
+    height: 100dvh;
+    min-height: 100svh;
+    max-height: 100dvh;
+  }
+
+  .hero-content {
+    width: min(100%, 34rem);
+    padding: clamp(4.5rem, 7.2dvh, 5.35rem) 1rem clamp(0.9rem, 2dvh, 1.45rem);
+  }
+
+  .hero-side-art--left {
+    left: -4rem;
+    bottom: 0;
+    width: auto;
+    height: min(31dvh, 17rem);
+    opacity: 0.48;
+  }
+
+  .hero-side-art--right {
+    right: -5.25rem;
+    bottom: 0;
+    width: auto;
+    height: min(25dvh, 14rem);
+    opacity: 0.5;
+  }
+
+  .hero-center-vignette {
+    top: 48%;
+    width: 116vw;
+    height: 70dvh;
+  }
+
+  
+
+  .royal-name-svg {
+    height: clamp(4.2rem, 18vw, 5.8rem);
+  }
+
+  .hero-date-line {
+    max-width: 25rem;
+    margin-inline: auto;
+    line-height: 1.5;
+  }
+
+  .hero-countdown-unit {
+    min-width: clamp(2.85rem, 14vw, 3.75rem);
+  }
+
+  .hero-countdown-value {
+    min-height: clamp(2.25rem, 11vw, 2.7rem);
+    font-size: clamp(1.35rem, 6.5vw, 1.8rem);
+  }
+
+  .hero-quote {
+    font-size: clamp(0.92rem, 4vw, 1.08rem);
+  }
+
+  .hero-actions {
+    gap: 0.5rem;
+  }
+
+  .hero-royal-button {
+    width: min(17rem, 82vw);
+    padding-block: 0.62rem;
+  }
+
+  .celebration-events {
+    grid-template-columns: 1fr;
+    width: min(34rem, 100%);
+  }
+
+  .celebration-event {
+    padding: 2.5rem 1.1rem;
+  }
+
+  .celebration-event + .celebration-event {
+    border-left: 0;
+    border-top: 1px solid rgba(44, 10, 18, 0.13);
+  }
+
+  .celebration-event-icon {
+    width: min(9rem, 62%);
+    height: 6.6rem;
+  }
+
+  .celebration-event-note {
+    min-height: 0;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 768px) {
+  .hero-content {
+    padding-top: 4.25rem;
+    padding-bottom: 0.75rem;
+  }
+
+  
+
+  .hero-kicker {
+    margin-bottom: 0.25rem;
+    font-size: 0.6rem;
+  }
+
+  .royal-name-svg {
+    height: 4.85rem;
+  }
+
+  .hero-date-line {
+    margin-top: 0.35rem;
+    font-size: 0.58rem;
+  }
+
+  .hero-divider {
+    margin-block: 0.38rem;
+  }
+
+  .hero-countdown-value {
+    min-height: 2.25rem;
+    font-size: 1.45rem;
+  }
+
+  .hero-countdown-label,
+  .hero-countdown-caption {
+    font-size: 0.46rem;
+  }
+
+  .hero-quote {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-actions {
+    margin-top: 0.55rem;
+  }
+
+  .hero-royal-button {
+    padding-block: 0.58rem;
+  }
+
+  .hero-side-art--left {
+    height: min(45dvh, 18rem);
+  }
+
+  .hero-side-art--right {
+    height: min(46dvh, 18rem);
+  }
+}
+
+@media (max-height: 620px) {
+  .hero-content {
+    padding-top: 3.9rem;
+    padding-bottom: 0.5rem;
+  }
+
+  
+
+  .royal-name-svg {
+    height: 4.2rem;
+  }
+
+  .hero-date-line {
+    margin-top: 0.25rem;
+  }
+
+  .hero-divider {
+    margin-block: 0.28rem;
+  }
+
+  .hero-countdown-value {
+    min-height: 2rem;
+    font-size: 1.3rem;
+  }
+
+  .hero-quote {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+  }
+
+  .hero-actions {
+    margin-top: 0.4rem;
+  }
+
+  .hero-royal-button {
+    padding-block: 0.5rem;
+  }
+}
+
+/* Keep the completed royal line-work as part of the final invitation artwork,
+   but beneath the readable Hero content. */
+.royal-path-layer {
+  z-index: 4;
+}
+
+/* =========================================================
+   MINOR HERO / RESPONSIVE / CALENDAR REFINEMENTS — 2026-09-19
+   Scoped to the requested adjustments only.
+   ========================================================= */
+
+/* Stronger top-left monogram without changing the logo artwork or proportions. */
+.site-nav-logo {
+  width: clamp(3.5rem, 4.6vw, 4.75rem) !important;
+  height: auto !important;
+  flex: 0 0 auto;
+}
+
+/* The red-marked center crest and line-work are removed in Hero.tsx. Give the
+   remaining invitation copy more air while still fitting short viewports. */
+.hero-content {
+  padding-top: clamp(5.15rem, 8.6dvh, 6.75rem);
+  padding-bottom: clamp(1.35rem, 2.8dvh, 2.35rem);
+}
+
+.hero-kicker {
+  margin-bottom: clamp(0.8rem, 1.65dvh, 1.2rem);
+}
+
+.royal-name-drawing {
+  margin-inline: auto;
+}
+
+.hero-date-line {
+  margin-top: clamp(0.95rem, 1.8dvh, 1.35rem);
+}
+
+.hero-divider {
+  margin-block: clamp(0.7rem, 1.35dvh, 1rem);
+}
+
+.hero-countdown {
+  gap: clamp(0.48rem, 1dvh, 0.72rem);
+}
+
+.hero-quote {
+  margin-top: clamp(0.72rem, 1.35dvh, 1.05rem);
+}
+
+.hero-actions {
+  margin-top: clamp(0.95rem, 1.8dvh, 1.35rem);
+}
+
+/* Keep the complete closed envelope centered inside the visual viewport. Its
+   width is limited by both viewport width and viewport height, so landscape
+   phones and short laptop windows do not crop the bottom edge. */
+.envelope-screen {
+  place-items: center;
+  padding:
+    max(0.7rem, env(safe-area-inset-top))
+    max(0.8rem, env(safe-area-inset-right))
+    max(0.7rem, env(safe-area-inset-bottom))
+    max(0.8rem, env(safe-area-inset-left));
+}
+
+.env-trigger {
+  width: min(590px, 92vw, calc(156svh - 8rem));
+  max-width: calc(100vw - 1.6rem);
+}
+
+.env-wrap {
+  gap: clamp(0.8rem, 2.4svh, 1.65rem);
+}
+
+.env-prompt {
+  gap: clamp(0.42rem, 1.3svh, 0.8rem);
+}
+
+/* Google Calendar is added to the current flat Celebration treatment rather
+   than restoring the previous calendar/card UI. */
+.celebration-event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem 1rem;
+  margin-top: 1.25rem;
+}
+
+.celebration-event-actions .celebration-event-link {
+  margin-top: 0;
+}
+
+.celebration-event-calendar {
+  padding: 0.62rem 0.85rem;
+  border: 1px solid rgba(90, 21, 38, 0.34);
+  border-radius: 999px;
+  background: transparent;
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+.celebration-event-calendar:hover {
+  border-color: var(--maroon-950);
+  background: rgba(90, 21, 38, 0.045);
+}
+
+.footer-links {
+  flex-wrap: wrap;
+  row-gap: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .site-nav-logo {
+    width: clamp(3rem, 13vw, 3.75rem) !important;
+  }
+
+  .hero-content {
+    width: min(100%, 34rem);
+    padding-top: clamp(4.6rem, 8.5dvh, 5.4rem);
+    padding-bottom: clamp(0.8rem, 1.8dvh, 1.3rem);
+  }
+
+  .hero-kicker {
+    margin-bottom: clamp(0.6rem, 1.2dvh, 0.9rem);
+  }
+
+  .hero-date-line {
+    margin-top: clamp(0.7rem, 1.4dvh, 1rem);
+  }
+
+  .hero-divider {
+    margin-block: clamp(0.48rem, 1dvh, 0.72rem);
+  }
+
+  .hero-quote {
+    margin-top: clamp(0.5rem, 1dvh, 0.75rem);
+  }
+
+  .hero-actions {
+    margin-top: clamp(0.65rem, 1.2dvh, 0.9rem);
+  }
+
+  .env-trigger {
+    width: min(94vw, 520px, calc(142svh - 7rem));
+    max-width: calc(100vw - 1.4rem);
+  }
+
+  .env-wrap {
+    gap: clamp(0.65rem, 2svh, 1.2rem);
+  }
+
+  #celebration,
+  #gallery,
+  #memories {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .celebration-event-name {
+    line-height: 1.06;
+  }
+
+  .celebration-event-actions {
+    gap: 0.7rem;
+  }
+
+  .celebration-event-calendar {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 420px) {
+  .env-trigger {
+    width: min(94vw, 460px, calc(132svh - 6rem));
+  }
+
+  .env-prompt-main {
+    font-size: clamp(0.8rem, 4vw, 0.98rem);
+  }
+
+  .footer-links {
+    column-gap: 1rem !important;
+  }
+}
+
+@media (max-height: 720px) {
+  .hero-content {
+    padding-top: 4.2rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .hero-kicker {
+    margin-bottom: 0.42rem;
+  }
+
+  .hero-date-line {
+    margin-top: 0.48rem;
+  }
+
+  .hero-divider {
+    margin-block: 0.38rem;
+  }
+
+  .hero-quote {
+    margin-top: 0.42rem;
+  }
+
+  .hero-actions {
+    margin-top: 0.55rem;
+  }
+}
+
+@media (max-height: 560px) {
+  .env-prompt-main {
+    font-size: 0.82rem;
+  }
+
+  .env-prompt-rule {
+    width: 2.9rem;
+  }
+}
+
+/* =========================================================
+   CENTER MONOGRAM + COUNTDOWN REFINEMENT — 2026-09-19
+   ========================================================= */
+
+/* Restore the ZS monogram directly above “The Wedding Of”. The artwork keeps
+   its original proportions and remains white like the rest of the Hero type. */
+.hero-center-logo {
+  display: grid;
+  place-items: center;
+  width: clamp(4.75rem, min(7.2vw, 10dvh), 6.6rem);
+  aspect-ratio: 1;
+  margin: 0 auto clamp(0.65rem, 1.25dvh, 0.95rem);
+}
+
+.hero-center-logo-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  filter: brightness(0) invert(1) !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Countdown keeps the exact timer layout, but the rectangular tiles are gone.
+   Only the white numerals, labels and separators remain on the maroon Hero. */
+.hero-countdown-value {
+  min-height: 0 !important;
+  padding: 0 0.12rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.22) !important;
+}
+
+.hero-countdown-unit {
+  min-width: clamp(3rem, 4.5vw, 4.25rem);
+}
+
+.hero-countdown-separator {
+  padding-top: clamp(0.18rem, 0.55vw, 0.42rem) !important;
+}
+
+@media (max-width: 767px) {
+  .hero-center-logo {
+    width: clamp(4.1rem, 17vw, 5.2rem);
+    margin-bottom: clamp(0.5rem, 1dvh, 0.72rem);
+  }
+
+  .hero-countdown-unit {
+    min-width: clamp(2.55rem, 13vw, 3.35rem);
+  }
+}
+
+@media (max-height: 650px) and (min-width: 768px) {
+  .hero-center-logo {
+    width: 3.75rem;
+    margin-bottom: 0.35rem;
+  }
+}

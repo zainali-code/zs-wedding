@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#F4EDE0"/>
+  <rect x="40" y="40" width="720" height="920" fill="none" stroke="#B8862E" stroke-width="1.5" opacity="0.5"/>
+  <text x="400" y="480" font-family="Georgia, serif" font-size="46" fill="#7A2E2E" text-anchor="middle" opacity="0.75">Z &amp; S</text>
+  <text x="400" y="530" font-family="Georgia, serif" font-size="16" letter-spacing="3" fill="#5C5448" text-anchor="middle" opacity="0.6">PHOTO 5 - COMING SOON</text>
+</svg>
